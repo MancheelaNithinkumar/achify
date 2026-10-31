@@ -1,0 +1,248 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "architecture",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\nithi\\talentAP\\.archify\\architecture\\candidate.json",
+    "sha256": "eff59f82f5a128c3023de712cf4a0ba3fc5b2e585f631aaa1b087e72c337c091",
+    "bytes": 15775
+  },
+  "artifact": {
+    "path": "C:\\Users\\nithi\\talentAP\\.archify\\architecture\\index.html",
+    "sha256": "997c0799957733bb8f3fa6718135d71020915b4f3fb8ee7fd68c7c6516df9531",
+    "bytes": 881998
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\nithi\\talentAP\\.archify\\architecture\\index.finalize.json",
+    "summaryReceipt": "C:\\Users\\nithi\\talentAP\\.archify\\architecture\\index.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\nithi\\talentAP\\.archify\\architecture\\index.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.2.0",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-31T05:28:57.189Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 3888,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  },
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "resolvedCrossovers": 6,
+      "routesOverSuggestedBends": 3,
+      "routesOverSuggestedStretch": 1
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [
+        {
+          "left": {
+            "id": "c_fastapi_sql",
+            "from": "fastapi",
+            "to": "sql_guard",
+            "label": "SELECT parse",
+            "collectionIndex": 3,
+            "artifactIndex": 4
+          },
+          "right": {
+            "id": "c_fastapi_metrics",
+            "from": "fastapi",
+            "to": "metrics",
+            "label": "track duration",
+            "collectionIndex": 11,
+            "artifactIndex": 12
+          },
+          "point": [
+            568.9499999999998,
+            246
+          ],
+          "sharedNode": "fastapi"
+        },
+        {
+          "left": {
+            "id": "c_sql_policy",
+            "from": "sql_guard",
+            "to": "policy_resolver",
+            "label": "resolve lineage",
+            "collectionIndex": 4,
+            "artifactIndex": 5
+          },
+          "right": {
+            "id": "c_fastapi_audit",
+            "from": "fastapi",
+            "to": "audit_log",
+            "label": "record event",
+            "collectionIndex": 10,
+            "artifactIndex": 11
+          },
+          "point": [
+            764,
+            331
+          ]
+        },
+        {
+          "left": {
+            "id": "c_sql_cache",
+            "from": "sql_guard",
+            "to": "result_cache",
+            "label": "check cache",
+            "collectionIndex": 6,
+            "artifactIndex": 7
+          },
+          "right": {
+            "id": "c_fastapi_metrics",
+            "from": "fastapi",
+            "to": "metrics",
+            "label": "track duration",
+            "collectionIndex": 11,
+            "artifactIndex": 12
+          },
+          "point": [
+            584,
+            365
+          ]
+        },
+        {
+          "left": {
+            "id": "c_cache_adapters",
+            "from": "result_cache",
+            "to": "sqlalchemy_adapters",
+            "label": "cache miss read",
+            "collectionIndex": 7,
+            "artifactIndex": 8
+          },
+          "right": {
+            "id": "c_fastapi_metrics",
+            "from": "fastapi",
+            "to": "metrics",
+            "label": "track duration",
+            "collectionIndex": 11,
+            "artifactIndex": 12
+          },
+          "point": [
+            748,
+            541
+          ]
+        },
+        {
+          "left": {
+            "id": "c_fastapi_audit",
+            "from": "fastapi",
+            "to": "audit_log",
+            "label": "record event",
+            "collectionIndex": 10,
+            "artifactIndex": 11
+          },
+          "right": {
+            "id": "c_fastapi_metrics",
+            "from": "fastapi",
+            "to": "metrics",
+            "label": "track duration",
+            "collectionIndex": 11,
+            "artifactIndex": 12
+          },
+          "point": [
+            584,
+            246
+          ],
+          "sharedNode": "fastapi"
+        },
+        {
+          "left": {
+            "id": "c_audit_meta",
+            "from": "audit_log",
+            "to": "meta_sqlite",
+            "label": "append log",
+            "collectionIndex": 12,
+            "artifactIndex": 13
+          },
+          "right": {
+            "id": "c_ml_policy",
+            "from": "ml_classifier",
+            "to": "policy_resolver",
+            "label": "ML upgrade",
+            "collectionIndex": 15,
+            "artifactIndex": 16
+          },
+          "point": [
+            968,
+            364.99999999999994
+          ]
+        }
+      ],
+      "detours": [
+        {
+          "relationship": {
+            "id": "c_fastapi_audit",
+            "from": "fastapi",
+            "to": "audit_log",
+            "label": "record event",
+            "collectionIndex": 10,
+            "artifactIndex": 11
+          },
+          "bends": 4,
+          "stretch": 1
+        },
+        {
+          "relationship": {
+            "id": "c_fastapi_metrics",
+            "from": "fastapi",
+            "to": "metrics",
+            "label": "track duration",
+            "collectionIndex": 11,
+            "artifactIndex": 12
+          },
+          "bends": 5,
+          "stretch": 1.42
+        },
+        {
+          "relationship": {
+            "id": "c_audit_meta",
+            "from": "audit_log",
+            "to": "meta_sqlite",
+            "label": "append log",
+            "collectionIndex": 12,
+            "artifactIndex": 13
+          },
+          "bends": 4,
+          "stretch": 1
+        }
+      ],
+      "truncated": false
+    },
+    "hints": [
+      "fastapi → sql_guard and fastapi → metrics cross next to fastapi: move node sql_guard or metrics so the two reach fastapi from different sides (for example one level with it, one directly above or below it).",
+      "sql_guard → policy_resolver crosses fastapi → audit_log: move the node of whichever is a branch, return, or second entrance to the other side of the main path, so that relationship runs through an empty corridor.",
+      "sql_guard → result_cache crosses fastapi → metrics: move the node of whichever is a branch, return, or second entrance to the other side of the main path, so that relationship runs through an empty corridor.",
+      "result_cache → sqlalchemy_adapters crosses fastapi → metrics: move the node of whichever is a branch, return, or second entrance to the other side of the main path, so that relationship runs through an empty corridor.",
+      "fastapi → audit_log and fastapi → metrics cross next to fastapi: move node audit_log or metrics so the two reach fastapi from different sides (for example one level with it, one directly above or below it).",
+      "audit_log → meta_sqlite crosses ml_classifier → policy_resolver: move the node of whichever is a branch, return, or second entrance to the other side of the main path, so that relationship runs through an empty corridor.",
+      "fastapi → audit_log needs 4 bends: move node fastapi or audit_log so they share a row or column with matching centers, or sit diagonally with a clear corner.",
+      "fastapi → metrics needs 5 bends: move node fastapi or metrics so they share a row or column with matching centers, or sit diagonally with a clear corner."
+    ],
+    "repair": "Trace these relationships at the desktop viewport. For Architecture, use references/architecture-layout-repair.md: reflow a blocked main path or tangled connected scene, and repair an isolated defect locally only when the surrounding composition is accepted. Preserve all semantic content and user-fixed geometry. Rerun finalize once after the edit."
+  }
+}

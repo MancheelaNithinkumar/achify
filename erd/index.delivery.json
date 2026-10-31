@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "95a29038-4c9f-4a9c-96e8-ad7671c1d828",
+  "status": "current",
+  "command": "deliver",
+  "type": "erd",
+  "input": "C:\\Users\\nithi\\talentAP\\.archify\\erd\\candidate.json",
+  "output": "C:\\Users\\nithi\\talentAP\\.archify\\erd\\index.html",
+  "specification": {
+    "sha256": "3c5e56591560ceac5c058f3a52f63ec01bd3001eaa119444eda3766307ae660e",
+    "bytes": 21806
+  },
+  "artifact": {
+    "sha256": "ec530865a41ba5b8fe6b6492c434acd4f953ca0757e68ccbaac810de47be824f",
+    "bytes": 930842
+  }
+}

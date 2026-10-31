@@ -1,0 +1,349 @@
+{
+  "schema_version": 1,
+  "diagram_type": "dataflow",
+  "meta": {
+    "title": "PII Discovery Scan Pipeline & Boundary Invariants",
+    "output": ".archify/dataflow/index.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Durga62823/talentAP.git",
+      "revision": "b3b41597eb486dcd0f39abf02121b62c818bd1c6"
+    }
+  },
+  "stages": [
+    {
+      "label": "Sampling & Ingest"
+    },
+    {
+      "label": "Rule-Based Scanning"
+    },
+    {
+      "label": "Sanitized Feature Extraction"
+    },
+    {
+      "label": "Model Inference & Upgrade"
+    },
+    {
+      "label": "Policy Binding & Persistence"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "target_db",
+      "stage": 0,
+      "row": 0,
+      "type": "database",
+      "label": "Target Database",
+      "sublabel": "SQLite, MySQL, Postgres",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/connectors.py",
+          "line": 182,
+          "end_line": 193,
+          "label": "adapter.sample"
+        }
+      ]
+    },
+    {
+      "id": "row_samples",
+      "stage": 0,
+      "row": 1,
+      "type": "backend",
+      "label": "Row Samples",
+      "sublabel": "RAM bounded (N=100)",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/discovery.py",
+          "line": 93,
+          "end_line": 112,
+          "label": "sample collection"
+        }
+      ]
+    },
+    {
+      "id": "sample_discard",
+      "stage": 0,
+      "row": 2,
+      "type": "security",
+      "label": "Sample Discard Gate",
+      "sublabel": "del samples / zero leak",
+      "tag": "memory freed",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/discovery.py",
+          "line": 112,
+          "end_line": 113,
+          "label": "explicit del samples"
+        }
+      ]
+    },
+    {
+      "id": "rule_scanner",
+      "stage": 1,
+      "row": 0,
+      "type": "backend",
+      "label": "Regex Scanner",
+      "sublabel": "Luhn, Verhoeff, patterns",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/scanner.py",
+          "line": 1,
+          "end_line": 60,
+          "label": "classify_column rules"
+        }
+      ]
+    },
+    {
+      "id": "rule_verdict",
+      "stage": 1,
+      "row": 1,
+      "type": "backend",
+      "label": "Rule Verdict",
+      "sublabel": "Baseline classification",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/discovery.py",
+          "line": 96,
+          "end_line": 100,
+          "label": "rule result"
+        }
+      ]
+    },
+    {
+      "id": "feature_extractor",
+      "stage": 2,
+      "row": 1,
+      "type": "security",
+      "label": "Feature Extractor",
+      "sublabel": "ai_features.py logic",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ai_features.py",
+          "line": 15,
+          "end_line": 80,
+          "label": "extract_features"
+        }
+      ]
+    },
+    {
+      "id": "sanitized_features",
+      "stage": 2,
+      "row": 2,
+      "type": "backend",
+      "label": "Sanitized Stats",
+      "sublabel": "Lengths, ratios, entropy",
+      "tag": "zero raw text",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ai_features.py",
+          "line": 80,
+          "end_line": 135,
+          "label": "feature schema"
+        }
+      ]
+    },
+    {
+      "id": "ml_classifier",
+      "stage": 3,
+      "row": 0,
+      "type": "backend",
+      "label": "Local ML Model",
+      "sublabel": "Stacked TF-IDF + GBDT",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ml/model.py",
+          "line": 20,
+          "end_line": 65,
+          "label": "ml_model.predict"
+        }
+      ]
+    },
+    {
+      "id": "gemini_service",
+      "stage": 3,
+      "row": 2,
+      "type": "cloud",
+      "label": "Gemini 2.5 Flash",
+      "sublabel": "External LLM classify",
+      "tag": "HTTPS egress",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ai_classifier.py",
+          "line": 206,
+          "end_line": 245,
+          "label": "Gemini client call"
+        }
+      ]
+    },
+    {
+      "id": "upgrade_gate",
+      "stage": 3,
+      "row": 1,
+      "type": "security",
+      "label": "Upgrade Gate",
+      "sublabel": "upgrade_decision()",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ai_classifier.py",
+          "line": 286,
+          "end_line": 297,
+          "label": "upgrade-only monotonicity"
+        }
+      ]
+    },
+    {
+      "id": "masking_policies",
+      "stage": 4,
+      "row": 0,
+      "type": "security",
+      "label": "Masking Policies",
+      "sublabel": "Role actions (REDACT)",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/policy.py",
+          "line": 75,
+          "end_line": 120,
+          "label": "Policy Resolver"
+        }
+      ]
+    },
+    {
+      "id": "metadb_store",
+      "stage": 4,
+      "row": 1,
+      "type": "database",
+      "label": "Metadata DB",
+      "sublabel": "classifications table",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 109,
+          "end_line": 134,
+          "label": "Classification Model"
+        }
+      ]
+    }
+  ],
+  "flows": [
+    {
+      "id": "f_sample",
+      "from": "target_db",
+      "to": "row_samples",
+      "label": "random sample",
+      "variant": "emphasis"
+    },
+    {
+      "id": "f_discard",
+      "from": "row_samples",
+      "to": "sample_discard",
+      "label": "discard raw",
+      "variant": "security"
+    },
+    {
+      "id": "f_scan",
+      "from": "row_samples",
+      "to": "rule_scanner",
+      "label": "scan values",
+      "variant": "emphasis"
+    },
+    {
+      "id": "f_verdict",
+      "from": "rule_scanner",
+      "to": "rule_verdict",
+      "label": "rule category",
+      "variant": "default"
+    },
+    {
+      "id": "f_extract",
+      "from": "row_samples",
+      "to": "feature_extractor",
+      "label": "featurize",
+      "variant": "emphasis"
+    },
+    {
+      "id": "f_stats",
+      "from": "feature_extractor",
+      "to": "sanitized_features",
+      "label": "pure statistics",
+      "variant": "security"
+    },
+    {
+      "id": "f_base_rule",
+      "from": "rule_verdict",
+      "to": "upgrade_gate",
+      "label": "baseline rank",
+      "variant": "default"
+    },
+    {
+      "id": "f_ml_in",
+      "from": "sanitized_features",
+      "to": "ml_classifier",
+      "label": "numeric features",
+      "variant": "default"
+    },
+    {
+      "id": "f_gemini_in",
+      "from": "sanitized_features",
+      "to": "gemini_service",
+      "label": "sanitized JSON",
+      "variant": "security"
+    },
+    {
+      "id": "f_ml_out",
+      "from": "ml_classifier",
+      "to": "upgrade_gate",
+      "label": "ML prediction",
+      "variant": "default"
+    },
+    {
+      "id": "f_gemini_out",
+      "from": "gemini_service",
+      "to": "upgrade_gate",
+      "label": "AI verdict",
+      "variant": "default"
+    },
+    {
+      "id": "f_upgrade_db",
+      "from": "upgrade_gate",
+      "to": "metadb_store",
+      "label": "persist verdict",
+      "variant": "emphasis"
+    },
+    {
+      "id": "f_db_policy",
+      "from": "metadb_store",
+      "to": "masking_policies",
+      "label": "bind policy",
+      "variant": "security"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "rose",
+      "title": "Strict Zero Retention Invariant",
+      "items": [
+        "Raw table samples are extracted in temporary memory buffers only (N=100 rows per table)",
+        "The discovery loop explicitly deletes samples (del samples) before any network I/O",
+        "Raw data values are never saved to disk, logged, or transmitted across any boundary"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Sanitized Feature Boundary",
+      "items": [
+        "Feature extraction produces mathematical aggregates: lengths, entropy, regex match ratios",
+        "Neither column values nor text samples cross into the ML pipeline or external Gemini endpoint",
+        "The external Gemini prompt receives only structural schema metadata and aggregate ratios"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Upgrade-Only Monotonicity",
+      "items": [
+        "Decisions follow a strict sensitivity lattice: PUBLIC (0) < INTERNAL (1) < PII_MEDIUM (3) < PII_HIGH (4)",
+        "Models can only raise protection levels (APPLIED); downgrades and shuffling are rejected (KEPT_RULE)",
+        "Human review status (approved/rejected/overridden) permanently locks classification from model edits"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "364c4087-a359-4ed1-ae95-423f6c304670",
+  "status": "current",
+  "command": "deliver",
+  "type": "dataflow",
+  "input": "C:\\Users\\nithi\\talentAP\\.archify\\dataflow\\candidate.json",
+  "output": "C:\\Users\\nithi\\talentAP\\.archify\\dataflow\\index.html",
+  "specification": {
+    "sha256": "9463fa39ddec698596f13bd522167c59eae1ad5947337d4584915f7969041f23",
+    "bytes": 8887
+  },
+  "artifact": {
+    "sha256": "9556ccc5b6efda7c572533f1cfe15d058decd034febbd6c0956a05de7a3acc52",
+    "bytes": 851626
+  }
+}

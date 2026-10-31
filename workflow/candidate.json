@@ -1,0 +1,339 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "PII Classifier Training & Benchmark Pipeline (train.py)",
+    "output": ".archify/workflow/index.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Durga62823/talentAP.git",
+      "revision": "b3b41597eb486dcd0f39abf02121b62c818bd1c6"
+    }
+  },
+  "lanes": [
+    {
+      "id": "data_lane",
+      "label": "Dataset & Preprocessing"
+    },
+    {
+      "id": "name_lane",
+      "label": "Name Classifier (TF-IDF)"
+    },
+    {
+      "id": "value_lane",
+      "label": "Value Classifier & Stacking"
+    },
+    {
+      "id": "eval_lane",
+      "label": "Evaluation & Benchmarks"
+    },
+    {
+      "id": "artifact_lane",
+      "label": "Artifacts & Packaging"
+    }
+  ],
+  "phases": [
+    {
+      "id": "p1",
+      "label": "Intake & Partitioning",
+      "fromCol": 0,
+      "toCol": 2
+    },
+    {
+      "id": "p2",
+      "label": "Model Training & Stacking",
+      "fromCol": 3,
+      "toCol": 4,
+      "variant": "emphasis"
+    },
+    {
+      "id": "p3",
+      "label": "Evaluation & Release",
+      "fromCol": 5,
+      "toCol": 5,
+      "variant": "security"
+    }
+  ],
+  "mainPath": [
+    "synth_corpus",
+    "featurize",
+    "grouped_split",
+    "name_model",
+    "value_model",
+    "calibration",
+    "synthetic_eval",
+    "saffron_eval",
+    "artifacts"
+  ],
+  "nodes": [
+    {
+      "id": "synth_corpus",
+      "lane": "data_lane",
+      "col": 0,
+      "type": "database",
+      "label": "Synthetic Corpus",
+      "sublabel": "synth.py generator",
+      "tag": "labels excluded",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ml/train.py",
+          "line": 132,
+          "end_line": 135,
+          "label": "synth.generate"
+        }
+      ]
+    },
+    {
+      "id": "featurize",
+      "lane": "data_lane",
+      "col": 1,
+      "type": "backend",
+      "label": "Featurize Columns",
+      "sublabel": "numeric + text stats",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ml/train.py",
+          "line": 53,
+          "end_line": 62,
+          "label": "featurize_columns"
+        }
+      ]
+    },
+    {
+      "id": "grouped_split",
+      "lane": "data_lane",
+      "col": 2,
+      "type": "security",
+      "label": "Name-Grouped Split",
+      "sublabel": "GroupShuffleSplit (80/20)",
+      "tag": "unseen test names",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ml/train.py",
+          "line": 141,
+          "end_line": 145,
+          "label": "GroupShuffleSplit"
+        }
+      ]
+    },
+    {
+      "id": "name_model",
+      "lane": "name_lane",
+      "col": 3,
+      "type": "backend",
+      "label": "Name Model (Level 1)",
+      "sublabel": "TF-IDF + LogisticRegression",
+      "tag": "char n-grams (2,5)",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ml/train.py",
+          "line": 148,
+          "end_line": 156,
+          "label": "name_model pipeline"
+        }
+      ]
+    },
+    {
+      "id": "value_model",
+      "lane": "value_lane",
+      "col": 3,
+      "type": "backend",
+      "label": "Value Model (Level 2)",
+      "sublabel": "HistGradientBoosting",
+      "tag": "X_num + 5-fold OOF",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ml/train.py",
+          "line": 158,
+          "end_line": 164,
+          "label": "value_model fit"
+        }
+      ]
+    },
+    {
+      "id": "calibration",
+      "lane": "value_lane",
+      "col": 4,
+      "type": "security",
+      "label": "Isotonic Calibration",
+      "sublabel": "CalibratedClassifierCV",
+      "tag": "ECE minimization",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ml/train.py",
+          "line": 160,
+          "end_line": 164,
+          "label": "isotonic calibration"
+        }
+      ]
+    },
+    {
+      "id": "synthetic_eval",
+      "lane": "eval_lane",
+      "col": 4,
+      "type": "backend",
+      "label": "Unseen Names Eval",
+      "sublabel": "Macro-F1 & ECE metric",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ml/train.py",
+          "line": 171,
+          "end_line": 184,
+          "label": "synthetic test metrics"
+        }
+      ]
+    },
+    {
+      "id": "saffron_eval",
+      "lane": "eval_lane",
+      "col": 5,
+      "type": "backend",
+      "label": "Saffron Benchmark",
+      "sublabel": "Real bank schema eval",
+      "tag": "ground truth",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ml/train.py",
+          "line": 186,
+          "end_line": 210,
+          "label": "saffron evaluation"
+        }
+      ]
+    },
+    {
+      "id": "artifacts",
+      "lane": "artifact_lane",
+      "col": 5,
+      "type": "database",
+      "label": "Model Artifact",
+      "sublabel": "pii_model.joblib",
+      "tag": "fitted pipeline",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ml/train.py",
+          "line": 225,
+          "end_line": 230,
+          "label": "joblib.dump artifact"
+        }
+      ]
+    },
+    {
+      "id": "model_card",
+      "lane": "data_lane",
+      "col": 5,
+      "type": "frontend",
+      "label": "Model Card",
+      "sublabel": "model_card.json",
+      "tag": "metadata & metrics",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ml/train.py",
+          "line": 231,
+          "end_line": 251,
+          "label": "model card writer"
+        }
+      ]
+    }
+  ],
+  "edges": [
+    {
+      "id": "e1",
+      "from": "synth_corpus",
+      "to": "featurize",
+      "label": "raw column vectors",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e2",
+      "from": "featurize",
+      "to": "grouped_split",
+      "label": "extracted features",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e3",
+      "from": "grouped_split",
+      "to": "name_model",
+      "label": "train column names",
+      "variant": "default"
+    },
+    {
+      "id": "e4",
+      "from": "grouped_split",
+      "to": "value_model",
+      "label": "numeric features [X_num]",
+      "variant": "default"
+    },
+    {
+      "id": "e5",
+      "from": "name_model",
+      "to": "value_model",
+      "label": "5-fold OOF probas",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e6",
+      "from": "value_model",
+      "to": "calibration",
+      "label": "fit stacked model",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e7",
+      "from": "calibration",
+      "to": "synthetic_eval",
+      "label": "test on held-out split",
+      "variant": "security"
+    },
+    {
+      "id": "e8",
+      "from": "synthetic_eval",
+      "to": "saffron_eval",
+      "label": "evaluate bank tables",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e9",
+      "from": "saffron_eval",
+      "to": "artifacts",
+      "label": "serialize pipeline",
+      "variant": "emphasis"
+    },
+    {
+      "id": "e10",
+      "from": "saffron_eval",
+      "to": "model_card",
+      "label": "record benchmarks",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Leakage-Free Name Grouping",
+      "items": [
+        "Synthetic corpus excludes column names present in the Saffron Bank evaluation set",
+        "GroupShuffleSplit partitions by base column name: test columns use names never seen during training",
+        "5-fold GroupKFold cross-validation generates out-of-fold probability vectors to prevent target leakage"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Stacked Calibration Architecture",
+      "items": [
+        "Level 1: Logistic regression on TF-IDF character n-grams (2 to 5 chars) over column names",
+        "Level 2: HistGradientBoosting on sanitized numeric statistics concatenated with OOF name probabilities",
+        "Isotonic regression calibrates class probabilities to minimize Expected Calibration Error (ECE)"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Dual-Benchmark Verification",
+      "items": [
+        "Model must generalize to unseen synthetic column names and achieve high macro-F1 and low ECE",
+        "Model is evaluated on real Saffron Bank tables against human-curated ground truth (saffron_labels.csv)",
+        "Both models are benchmarked against the deterministic rule engine to ensure upgrade monotonicity"
+      ]
+    }
+  ]
+}

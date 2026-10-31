@@ -1,0 +1,330 @@
+{
+  "schema_version": 3,
+  "diagram_type": "lifecycle",
+  "meta": {
+    "title": "Column Classification Lifecycle & Review State Machine",
+    "output": ".archify/lifecycle/index.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Durga62823/talentAP.git",
+      "revision": "b3b41597eb486dcd0f39abf02121b62c818bd1c6"
+    }
+  },
+  "mainPath": [
+    "rule_scanned",
+    "model_eval",
+    "applied",
+    "pending",
+    "approved"
+  ],
+  "states": [
+    {
+      "id": "rule_scanned",
+      "type": "start",
+      "label": "Rule Result",
+      "sublabel": "Regex / Luhn",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/scanner.py",
+          "line": 1,
+          "end_line": 60,
+          "label": "Scanner Heuristics"
+        }
+      ]
+    },
+    {
+      "id": "model_eval",
+      "type": "decision",
+      "label": "Model Check",
+      "sublabel": "ML / Gemini",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/discovery.py",
+          "line": 191,
+          "end_line": 240,
+          "label": "Model Orchestration"
+        },
+        {
+          "path": "FULL_CODE/backend/app/ai_classifier.py",
+          "line": 286,
+          "end_line": 297,
+          "label": "upgrade_decision"
+        }
+      ]
+    },
+    {
+      "id": "agrees",
+      "type": "neutral",
+      "label": "AGREES",
+      "sublabel": "Same category",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ai_classifier.py",
+          "line": 289,
+          "end_line": 290,
+          "label": "AGREES verdict"
+        }
+      ]
+    },
+    {
+      "id": "kept_rule",
+      "type": "neutral",
+      "label": "KEPT_RULE",
+      "sublabel": "Rank <= rule",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ai_classifier.py",
+          "line": 293,
+          "end_line": 294,
+          "label": "KEPT_RULE verdict"
+        }
+      ]
+    },
+    {
+      "id": "low_confidence",
+      "type": "waiting",
+      "label": "LOW_CONF",
+      "sublabel": "Review needed",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ai_classifier.py",
+          "line": 295,
+          "end_line": 296,
+          "label": "LOW_CONFIDENCE verdict"
+        }
+      ]
+    },
+    {
+      "id": "model_unavailable",
+      "type": "failure",
+      "label": "UNAVAILABLE",
+      "sublabel": "Offline / error",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/discovery.py",
+          "line": 218,
+          "end_line": 219,
+          "label": "Unavailable fallback"
+        }
+      ]
+    },
+    {
+      "id": "human_reviewed_kept",
+      "type": "neutral",
+      "label": "HUMAN_REV",
+      "sublabel": "Decision locked",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ai_classifier.py",
+          "line": 291,
+          "end_line": 292,
+          "label": "HUMAN_REVIEWED lock"
+        }
+      ]
+    },
+    {
+      "id": "applied",
+      "type": "active",
+      "label": "APPLIED",
+      "sublabel": "Upgraded rank",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ai_classifier.py",
+          "line": 297,
+          "end_line": 297,
+          "label": "APPLIED upgrade"
+        }
+      ]
+    },
+    {
+      "id": "pending",
+      "type": "waiting",
+      "label": "Pending",
+      "sublabel": "Human review",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 129,
+          "end_line": 130,
+          "label": "Pending review status"
+        }
+      ]
+    },
+    {
+      "id": "approved",
+      "type": "success",
+      "label": "Approved",
+      "sublabel": "Confirmed",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 129,
+          "end_line": 131,
+          "label": "Approved status"
+        }
+      ]
+    },
+    {
+      "id": "rejected",
+      "type": "failure",
+      "label": "Rejected",
+      "sublabel": "Reverted",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 129,
+          "end_line": 131,
+          "label": "Rejected status"
+        }
+      ]
+    },
+    {
+      "id": "overridden",
+      "type": "active",
+      "label": "Overridden",
+      "sublabel": "Manual policy",
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 129,
+          "end_line": 131,
+          "label": "Overridden status"
+        }
+      ]
+    }
+  ],
+  "transitions": [
+    {
+      "id": "t1",
+      "from": "rule_scanned",
+      "to": "model_eval",
+      "label": "eval",
+      "variant": "emphasis"
+    },
+    {
+      "id": "t2",
+      "from": "model_eval",
+      "to": "applied",
+      "label": "upgrade",
+      "variant": "emphasis"
+    },
+    {
+      "id": "t3",
+      "from": "applied",
+      "to": "pending",
+      "label": "apply",
+      "variant": "emphasis"
+    },
+    {
+      "id": "t4",
+      "from": "pending",
+      "to": "approved",
+      "label": "approve",
+      "variant": "emphasis"
+    },
+    {
+      "id": "t_agrees",
+      "from": "model_eval",
+      "to": "agrees",
+      "label": "agree",
+      "variant": "default"
+    },
+    {
+      "id": "t_kept_rule",
+      "from": "model_eval",
+      "to": "kept_rule",
+      "label": "rank <= rule",
+      "variant": "default"
+    },
+    {
+      "id": "t_low_conf",
+      "from": "model_eval",
+      "to": "low_confidence",
+      "label": "low conf",
+      "variant": "dashed"
+    },
+    {
+      "id": "t_unavail",
+      "from": "model_eval",
+      "to": "model_unavailable",
+      "label": "offline",
+      "variant": "dashed"
+    },
+    {
+      "id": "t_locked",
+      "from": "model_eval",
+      "to": "human_reviewed_kept",
+      "label": "locked",
+      "variant": "default"
+    },
+    {
+      "id": "t_agrees_p",
+      "from": "agrees",
+      "to": "pending",
+      "label": "keep rule",
+      "variant": "default"
+    },
+    {
+      "id": "t_kept_p",
+      "from": "kept_rule",
+      "to": "pending",
+      "label": "keep rule",
+      "variant": "default"
+    },
+    {
+      "id": "t_low_p",
+      "from": "low_confidence",
+      "to": "pending",
+      "label": "review",
+      "variant": "dashed"
+    },
+    {
+      "id": "t_unavail_p",
+      "from": "model_unavailable",
+      "to": "pending",
+      "label": "keep rule",
+      "variant": "default"
+    },
+    {
+      "id": "t_reject",
+      "from": "pending",
+      "to": "rejected",
+      "label": "reject",
+      "variant": "default"
+    },
+    {
+      "id": "t_override",
+      "from": "pending",
+      "to": "overridden",
+      "label": "override",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "emerald",
+      "title": "Monotonic Lattice Rule",
+      "items": [
+        "Classification upgrades require strict inequality in sensitivity rank: PUBLIC < INTERNAL < PII_MEDIUM < PII_HIGH",
+        "A model predicting a lower sensitivity level is assigned KEPT_RULE; automatic downgrades are mathematically impossible",
+        "Classifications that match the rule scanner yield AGREES, keeping the baseline rule intact"
+      ]
+    },
+    {
+      "dot": "cyan",
+      "title": "Reviewer Authority Lock",
+      "items": [
+        "Human actions (approved, rejected, overridden) transition the column out of pending",
+        "Future scans encounter the HUMAN_REVIEWED guard, permanently shielding manual verdicts from model overrides"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Deterministic Availability Guarantee",
+      "items": [
+        "If external Gemini or local ML models fail, encounter quota issues, or are unconfigured, state becomes AI_UNAVAILABLE / ML_UNAVAILABLE",
+        "Scans complete gracefully, ensuring data protection operates without interruption"
+      ]
+    }
+  ]
+}

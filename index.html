@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>DreamGuard Architecture Hub (Archify)</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --card-border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #38bdf8;
+      --accent-hover: #0284c7;
+      --active-bg: #0369a1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+      overflow: hidden;
+    }
+    header {
+      background: #090d16;
+      border-bottom: 1px solid var(--card-border);
+      padding: 12px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .brand h1 {
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      color: #fff;
+    }
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      padding: 3px 8px;
+      border-radius: 9999px;
+      background: rgba(56, 189, 248, 0.15);
+      color: var(--accent);
+      border: 1px solid rgba(56, 189, 248, 0.3);
+    }
+    nav {
+      display: flex;
+      gap: 6px;
+      overflow-x: auto;
+      padding: 4px;
+    }
+    nav button {
+      background: transparent;
+      border: 1px solid transparent;
+      color: var(--text-muted);
+      padding: 7px 14px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+    nav button:hover {
+      background: var(--card-bg);
+      color: #fff;
+      border-color: var(--card-border);
+    }
+    nav button.active {
+      background: var(--active-bg);
+      color: #fff;
+      border-color: var(--accent);
+    }
+    .actions {
+      display: flex;
+      gap: 10px;
+    }
+    .action-btn {
+      font-size: 0.8rem;
+      padding: 6px 12px;
+      border-radius: 6px;
+      text-decoration: none;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .action-btn:hover {
+      background: #334155;
+      color: #fff;
+    }
+    main {
+      flex: 1;
+      position: relative;
+      background: #020617;
+    }
+    iframe {
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="brand">
+      <h1>DreamGuard / SentinelMask</h1>
+      <span class="badge">Archify Suite</span>
+    </div>
+    <nav id="nav">
+      <button class="active" onclick="switchDiagram('architecture/index.html', this)">
+        <span>🏛️</span> Architecture
+      </button>
+      <button onclick="switchDiagram('sequence/index.html', this)">
+        <span>⚡</span> Sequence
+      </button>
+      <button onclick="switchDiagram('dataflow/index.html', this)">
+        <span>🌊</span> Dataflow
+      </button>
+      <button onclick="switchDiagram('lifecycle/index.html', this)">
+        <span>🔄</span> Lifecycle
+      </button>
+      <button onclick="switchDiagram('erd/index.html', this)">
+        <span>🗄️</span> ERD Schema
+      </button>
+      <button onclick="switchDiagram('workflow/index.html', this)">
+        <span>🧠</span> ML Workflow
+      </button>
+    </nav>
+    <div class="actions">
+      <a id="external-link" class="action-btn" href="architecture/index.html" target="_blank" title="Open in new tab">
+        ↗ Pop out
+      </a>
+    </div>
+  </header>
+  <main>
+    <iframe id="viewer" src="architecture/index.html"></iframe>
+  </main>
+  <script>
+    function switchDiagram(path, btn) {
+      document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById('viewer').src = path;
+      document.getElementById('external-link').href = path;
+    }
+  </script>
+</body>
+</html>
+

@@ -1,0 +1,700 @@
+{
+  "schema_version": 1,
+  "diagram_type": "architecture",
+  "meta": {
+    "title": "SentinelMask / DreamGuard System Architecture",
+    "output": ".archify/architecture/index.html",
+    "quality_profile": "showcase",
+    "repository": {
+      "url": "https://github.com/Durga62823/talentAP.git",
+      "revision": "b3b41597eb486dcd0f39abf02121b62c818bd1c6"
+    }
+  },
+  "components": [
+    {
+      "id": "browser",
+      "type": "frontend",
+      "label": "Browser Client",
+      "sublabel": "React 18 / Vite SPA Console",
+      "pos": [
+        40,
+        160
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/frontend/src/main.tsx",
+          "line": 1,
+          "end_line": 25,
+          "label": "Vite Entry"
+        },
+        {
+          "path": "FULL_CODE/frontend/src/lib/api.ts",
+          "line": 1,
+          "end_line": 40,
+          "label": "API Client"
+        }
+      ]
+    },
+    {
+      "id": "vercel",
+      "type": "cloud",
+      "label": "Vercel Edge Proxy",
+      "sublabel": "Vite SPA & /api rewrite",
+      "tag": "port :443",
+      "pos": [
+        276,
+        160
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/frontend/vercel.json",
+          "line": 1,
+          "end_line": 25,
+          "label": "Vercel Proxy"
+        }
+      ]
+    },
+    {
+      "id": "fastapi",
+      "type": "backend",
+      "label": "FastAPI Server",
+      "sublabel": "Uvicorn ASGI on Render",
+      "tag": "port $PORT",
+      "pos": [
+        516,
+        160
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/main.py",
+          "line": 42,
+          "end_line": 87,
+          "label": "FastAPI App"
+        },
+        {
+          "path": "render.yaml",
+          "line": 1,
+          "end_line": 35,
+          "label": "Render Spec"
+        }
+      ]
+    },
+    {
+      "id": "sql_guard",
+      "type": "security",
+      "label": "SQL Guard",
+      "sublabel": "sqlglot AST + rewrite",
+      "pos": [
+        516,
+        300
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/sql_guard.py",
+          "line": 26,
+          "end_line": 45,
+          "label": "AST Whitelist"
+        },
+        {
+          "path": "FULL_CODE/backend/app/sql_guard.py",
+          "line": 128,
+          "end_line": 175,
+          "label": "Query Plan"
+        }
+      ]
+    },
+    {
+      "id": "result_cache",
+      "type": "database",
+      "label": "Result Cache",
+      "sublabel": "LRU + TTL in-memory",
+      "pos": [
+        516,
+        440
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/connectors.py",
+          "line": 99,
+          "end_line": 134,
+          "label": "LRU Cache"
+        }
+      ]
+    },
+    {
+      "id": "masking_engine",
+      "type": "backend",
+      "label": "Masking Engine",
+      "sublabel": "Pure masking functions",
+      "pos": [
+        516,
+        580
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/masking.py",
+          "line": 18,
+          "end_line": 35,
+          "label": "Masking Actions"
+        },
+        {
+          "path": "FULL_CODE/backend/app/masking.py",
+          "line": 165,
+          "end_line": 215,
+          "label": "Masking Pure Funcs"
+        }
+      ]
+    },
+    {
+      "id": "auth_rbac",
+      "type": "security",
+      "label": "Auth & RBAC",
+      "sublabel": "Sessions & permissions",
+      "pos": [
+        772,
+        160
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/security.py",
+          "line": 20,
+          "end_line": 80,
+          "label": "Security Principal"
+        },
+        {
+          "path": "FULL_CODE/backend/app/api/auth.py",
+          "line": 25,
+          "end_line": 70,
+          "label": "Auth Endpoints"
+        }
+      ]
+    },
+    {
+      "id": "policy_resolver",
+      "type": "security",
+      "label": "Policy Resolver",
+      "sublabel": "Specificity matcher",
+      "pos": [
+        772,
+        300
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/policy.py",
+          "line": 52,
+          "end_line": 105,
+          "label": "Specificity Logic"
+        }
+      ]
+    },
+    {
+      "id": "audit_log",
+      "type": "security",
+      "label": "Audit Service",
+      "sublabel": "SHA-256 hash chain",
+      "pos": [
+        772,
+        440
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/audit.py",
+          "line": 29,
+          "end_line": 85,
+          "label": "Audit Chain"
+        },
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 273,
+          "end_line": 287,
+          "label": "Audit Triggers"
+        }
+      ]
+    },
+    {
+      "id": "metrics",
+      "type": "backend",
+      "label": "Metrics Service",
+      "sublabel": "Durations & hit rate",
+      "pos": [
+        772,
+        580
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metrics.py",
+          "line": 10,
+          "end_line": 50,
+          "label": "Metrics Collection"
+        },
+        {
+          "path": "FULL_CODE/backend/app/main.py",
+          "line": 123,
+          "end_line": 132,
+          "label": "Metrics API"
+        }
+      ]
+    },
+    {
+      "id": "meta_sqlite",
+      "type": "database",
+      "label": "Metadata Store",
+      "sublabel": "SQLite metadb schema",
+      "pos": [
+        1028,
+        160
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 289,
+          "end_line": 325,
+          "label": "Metadata Engine"
+        }
+      ]
+    },
+    {
+      "id": "rule_scanner",
+      "type": "backend",
+      "label": "Rule Scanner",
+      "sublabel": "Regex + Luhn heuristics",
+      "pos": [
+        1028,
+        300
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/scanner.py",
+          "line": 1,
+          "end_line": 60,
+          "label": "Rule Patterns"
+        },
+        {
+          "path": "FULL_CODE/backend/app/discovery.py",
+          "line": 90,
+          "end_line": 115,
+          "label": "Scan Orchestrator"
+        }
+      ]
+    },
+    {
+      "id": "ml_classifier",
+      "type": "backend",
+      "label": "Local ML Classifier",
+      "sublabel": "Stacked TF-IDF + GBDT",
+      "pos": [
+        1028,
+        440
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ml/model.py",
+          "line": 20,
+          "end_line": 65,
+          "label": "ML Classifier"
+        },
+        {
+          "path": "FULL_CODE/backend/app/discovery.py",
+          "line": 191,
+          "end_line": 240,
+          "label": "ML Upgrades"
+        }
+      ]
+    },
+    {
+      "id": "sqlalchemy_adapters",
+      "type": "backend",
+      "label": "SQLAlchemy Adapters",
+      "sublabel": "Read-only pool runners",
+      "pos": [
+        1028,
+        580
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/connectors.py",
+          "line": 89,
+          "end_line": 135,
+          "label": "Target Adapters"
+        },
+        {
+          "path": "FULL_CODE/backend/app/connectors.py",
+          "line": 266,
+          "end_line": 330,
+          "label": "SQLite Adapter"
+        }
+      ]
+    },
+    {
+      "id": "target_sqlite",
+      "type": "database",
+      "label": "SQLite Target",
+      "sublabel": "PRAGMA query_only=ON",
+      "pos": [
+        772,
+        730
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/connectors.py",
+          "line": 266,
+          "end_line": 330,
+          "label": "SQLite Adapter"
+        }
+      ]
+    },
+    {
+      "id": "target_mysql",
+      "type": "database",
+      "label": "MySQL Target",
+      "sublabel": "START READ ONLY",
+      "pos": [
+        968,
+        730
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/connectors.py",
+          "line": 394,
+          "end_line": 460,
+          "label": "MySQL Adapter"
+        }
+      ]
+    },
+    {
+      "id": "target_postgres",
+      "type": "database",
+      "label": "PostgreSQL Target",
+      "sublabel": "SET READ ONLY",
+      "pos": [
+        1164,
+        730
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/connectors.py",
+          "line": 333,
+          "end_line": 392,
+          "label": "Postgres Adapter"
+        }
+      ]
+    },
+    {
+      "id": "gemini_service",
+      "type": "external",
+      "label": "Gemini 2.5 Flash",
+      "sublabel": "Sanitized features only",
+      "tag": "API key secret",
+      "pos": [
+        1284,
+        300
+      ],
+      "size": [
+        136,
+        62
+      ],
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/ai_classifier.py",
+          "line": 34,
+          "end_line": 62,
+          "label": "Gemini Prompt"
+        },
+        {
+          "path": "FULL_CODE/backend/app/ai_classifier.py",
+          "line": 206,
+          "end_line": 245,
+          "label": "Gemini Client"
+        }
+      ]
+    }
+  ],
+  "boundaries": [
+    {
+      "kind": "region",
+      "label": "Browser Client Boundary",
+      "wraps": [
+        "browser"
+      ],
+      "pad": 16
+    },
+    {
+      "kind": "region",
+      "label": "Vercel Edge Cloud",
+      "wraps": [
+        "vercel"
+      ],
+      "pad": 16
+    },
+    {
+      "kind": "region",
+      "label": "Render Cloud: FastAPI Backend Core",
+      "wraps": [
+        "fastapi",
+        "sql_guard",
+        "result_cache",
+        "masking_engine",
+        "auth_rbac",
+        "policy_resolver",
+        "audit_log",
+        "metrics",
+        "meta_sqlite",
+        "rule_scanner",
+        "ml_classifier",
+        "sqlalchemy_adapters"
+      ],
+      "pad": 20
+    },
+    {
+      "kind": "region",
+      "label": "External AI Trust Boundary",
+      "wraps": [
+        "gemini_service"
+      ],
+      "pad": 16
+    },
+    {
+      "kind": "region",
+      "label": "Target Database Layer",
+      "wraps": [
+        "target_sqlite",
+        "target_mysql",
+        "target_postgres"
+      ],
+      "pad": 16
+    }
+  ],
+  "connections": [
+    {
+      "id": "c_browser_vercel",
+      "from": "browser",
+      "to": "vercel",
+      "label": "HTTPS :443",
+      "variant": "emphasis"
+    },
+    {
+      "id": "c_vercel_fastapi",
+      "from": "vercel",
+      "to": "fastapi",
+      "label": "/api rewrite",
+      "variant": "emphasis"
+    },
+    {
+      "id": "c_fastapi_auth",
+      "from": "fastapi",
+      "to": "auth_rbac",
+      "label": "verify session",
+      "variant": "security"
+    },
+    {
+      "id": "c_fastapi_sql",
+      "from": "fastapi",
+      "to": "sql_guard",
+      "label": "SELECT parse",
+      "variant": "emphasis"
+    },
+    {
+      "id": "c_sql_policy",
+      "from": "sql_guard",
+      "to": "policy_resolver",
+      "label": "resolve lineage",
+      "variant": "security"
+    },
+    {
+      "id": "c_policy_meta",
+      "from": "policy_resolver",
+      "to": "meta_sqlite",
+      "label": "read policies",
+      "variant": "default"
+    },
+    {
+      "id": "c_sql_cache",
+      "from": "sql_guard",
+      "to": "result_cache",
+      "label": "check cache",
+      "variant": "default"
+    },
+    {
+      "id": "c_cache_adapters",
+      "from": "result_cache",
+      "to": "sqlalchemy_adapters",
+      "label": "cache miss read",
+      "variant": "emphasis"
+    },
+    {
+      "id": "c_cache_masking",
+      "from": "result_cache",
+      "to": "masking_engine",
+      "label": "raw row tuples",
+      "variant": "default"
+    },
+    {
+      "id": "c_masking_fastapi",
+      "from": "masking_engine",
+      "to": "fastapi",
+      "label": "masked rows",
+      "variant": "emphasis",
+      "fromSide": "left",
+      "toSide": "left"
+    },
+    {
+      "id": "c_fastapi_audit",
+      "from": "fastapi",
+      "to": "audit_log",
+      "label": "record event",
+      "variant": "security"
+    },
+    {
+      "id": "c_fastapi_metrics",
+      "from": "fastapi",
+      "to": "metrics",
+      "label": "track duration",
+      "variant": "default"
+    },
+    {
+      "id": "c_audit_meta",
+      "from": "audit_log",
+      "to": "meta_sqlite",
+      "label": "append log",
+      "variant": "security"
+    },
+    {
+      "id": "c_scanner_ml",
+      "from": "rule_scanner",
+      "to": "ml_classifier",
+      "label": "numeric stats",
+      "variant": "default"
+    },
+    {
+      "id": "c_scanner_gemini",
+      "from": "rule_scanner",
+      "to": "gemini_service",
+      "label": "sanitized JSON",
+      "variant": "security"
+    },
+    {
+      "id": "c_ml_policy",
+      "from": "ml_classifier",
+      "to": "policy_resolver",
+      "label": "ML upgrade",
+      "variant": "default"
+    },
+    {
+      "id": "c_adapters_sqlite",
+      "from": "sqlalchemy_adapters",
+      "to": "target_sqlite",
+      "label": "read-only",
+      "variant": "default"
+    },
+    {
+      "id": "c_adapters_mysql",
+      "from": "sqlalchemy_adapters",
+      "to": "target_mysql",
+      "label": "read-only",
+      "variant": "default"
+    },
+    {
+      "id": "c_adapters_postgres",
+      "from": "sqlalchemy_adapters",
+      "to": "target_postgres",
+      "label": "read-only",
+      "variant": "default"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Front-Door & Routing",
+      "items": [
+        "Vercel serves Vite React SPA and proxies /api/* directly to Render",
+        "FastAPI enforces CORS, security headers, correlation IDs, and gzip compression"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Zero-Trust Enforcement",
+      "items": [
+        "SQL Guard parses AST via sqlglot, disallowing nested queries, CTEs, and functions",
+        "Column lineage rewrite binds output aliases (_c0, _c1) to enforce per-column policies",
+        "Target adapters enforce read-only transactions across SQLite, MySQL, and PostgreSQL"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Discovery & Governance",
+      "items": [
+        "Local stacked ML model (TF-IDF + GBDT) runs fully on-server without external egress",
+        "Optional Gemini 2.5 Flash receives ONLY mathematical aggregates, never raw data",
+        "Audit log enforces cryptographic SHA-256 hash chaining with SQLite trigger immutability"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "e8a4b178-c02e-4c4e-919e-043093921d14",
+  "status": "current",
+  "command": "deliver",
+  "type": "workflow",
+  "input": "C:\\Users\\nithi\\talentAP\\.archify\\workflow\\candidate.json",
+  "output": "C:\\Users\\nithi\\talentAP\\.archify\\workflow\\index.html",
+  "specification": {
+    "sha256": "fdede61328435d040eae98fa23e9c6249579e6045d4efe07ad164821dbea7bc2",
+    "bytes": 8654
+  },
+  "artifact": {
+    "sha256": "dde3ddbcf43f3986ba1fa957b41f07e365b28000cbff041f5d740f927740e327",
+    "bytes": 854011
+  }
+}

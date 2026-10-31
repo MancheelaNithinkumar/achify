@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "9f6e0503-67f9-4876-a24b-f5e75979b1ac",
+  "status": "current",
+  "command": "deliver",
+  "type": "lifecycle",
+  "input": "C:\\Users\\nithi\\talentAP\\.archify\\lifecycle\\candidate.json",
+  "output": "C:\\Users\\nithi\\talentAP\\.archify\\lifecycle\\index.html",
+  "specification": {
+    "sha256": "b4efbc9cf531cebcbba09d127c9b5bb0b9baeb94f1ba4bd96e3b5fd327622606",
+    "bytes": 8127
+  },
+  "artifact": {
+    "sha256": "1ffa4e1ae5fe29efcfc273bda0ec4e91a72990bf442ea874c019905d0a15fd87",
+    "bytes": 857572
+  }
+}

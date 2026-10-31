@@ -1,0 +1,971 @@
+{
+  "schema_version": 1,
+  "diagram_type": "erd",
+  "meta": {
+    "title": "SentinelMask Metadata Schema (metadb.py)",
+    "output": ".archify/erd/index.html",
+    "quality_profile": "standard",
+    "repository": {
+      "url": "https://github.com/Durga62823/talentAP.git",
+      "revision": "b3b41597eb486dcd0f39abf02121b62c818bd1c6"
+    }
+  },
+  "layout": {
+    "mode": "grid",
+    "origin": [
+      40,
+      40
+    ],
+    "gapX": 50,
+    "gapY": 40,
+    "entityW": 280,
+    "headerH": 32,
+    "rowH": 18
+  },
+  "entities": [
+    {
+      "id": "roles",
+      "label": "roles",
+      "tag": "IAM",
+      "col": 0,
+      "row": 0,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 40,
+          "end_line": 45,
+          "label": "Role Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "name",
+          "type": "VARCHAR(32)",
+          "key": "pk"
+        },
+        {
+          "name": "description",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "permissions",
+          "type": "JSON"
+        }
+      ]
+    },
+    {
+      "id": "users",
+      "label": "users",
+      "tag": "IAM",
+      "col": 0,
+      "row": 1,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 47,
+          "end_line": 56,
+          "label": "User Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "id",
+          "type": "VARCHAR(32)",
+          "key": "pk"
+        },
+        {
+          "name": "username",
+          "type": "VARCHAR(64)",
+          "key": "uk"
+        },
+        {
+          "name": "display_name",
+          "type": "VARCHAR(128)"
+        },
+        {
+          "name": "password_hash",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "role",
+          "type": "VARCHAR(32)",
+          "key": "fk",
+          "references": "roles.name"
+        },
+        {
+          "name": "active",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "id": "sessions",
+      "label": "sessions",
+      "tag": "IAM",
+      "col": 0,
+      "row": 2,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 58,
+          "end_line": 65,
+          "label": "AuthSession Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "token_hash",
+          "type": "VARCHAR(64)",
+          "key": "pk"
+        },
+        {
+          "name": "user_id",
+          "type": "VARCHAR(32)",
+          "key": "fk",
+          "references": "users.id"
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "expires_at",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "revoked",
+          "type": "BOOLEAN"
+        }
+      ]
+    },
+    {
+      "id": "connections",
+      "label": "connections",
+      "tag": "Datasources",
+      "col": 1,
+      "row": 0,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 67,
+          "end_line": 80,
+          "label": "DbConnection Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "id",
+          "type": "VARCHAR(32)",
+          "key": "pk"
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(64)",
+          "key": "uk"
+        },
+        {
+          "name": "kind",
+          "type": "VARCHAR(16)"
+        },
+        {
+          "name": "params",
+          "type": "JSON"
+        },
+        {
+          "name": "secret_enc",
+          "type": "TEXT"
+        },
+        {
+          "name": "allowed_schemas",
+          "type": "JSON"
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(16)"
+        },
+        {
+          "name": "status_detail",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "last_tested_at",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "id": "table_grants",
+      "label": "table_grants",
+      "tag": "Datasources",
+      "col": 1,
+      "row": 1,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 82,
+          "end_line": 92,
+          "label": "TableGrant Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "key": "pk"
+        },
+        {
+          "name": "connection_id",
+          "type": "VARCHAR(32)",
+          "key": "fk",
+          "references": "connections.id"
+        },
+        {
+          "name": "schema_name",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "table_name",
+          "type": "VARCHAR(128)"
+        },
+        {
+          "name": "role",
+          "type": "VARCHAR(32)"
+        }
+      ]
+    },
+    {
+      "id": "scan_runs",
+      "label": "scan_runs",
+      "tag": "Datasources",
+      "col": 1,
+      "row": 2,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 94,
+          "end_line": 107,
+          "label": "ScanRun Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "id",
+          "type": "VARCHAR(32)",
+          "key": "pk"
+        },
+        {
+          "name": "connection_id",
+          "type": "VARCHAR(32)",
+          "key": "fk",
+          "references": "connections.id"
+        },
+        {
+          "name": "started_at",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "finished_at",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(16)"
+        },
+        {
+          "name": "tables_scanned",
+          "type": "INTEGER"
+        },
+        {
+          "name": "columns_scanned",
+          "type": "INTEGER"
+        },
+        {
+          "name": "sensitive_found",
+          "type": "INTEGER"
+        },
+        {
+          "name": "sample_size",
+          "type": "INTEGER"
+        },
+        {
+          "name": "actor_id",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "error",
+          "type": "VARCHAR(255)"
+        }
+      ]
+    },
+    {
+      "id": "uploads",
+      "label": "uploads",
+      "tag": "Datasources",
+      "col": 1,
+      "row": 3,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 235,
+          "end_line": 253,
+          "label": "Upload Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "id",
+          "type": "VARCHAR(32)",
+          "key": "pk"
+        },
+        {
+          "name": "original_name",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "kind",
+          "type": "VARCHAR(8)"
+        },
+        {
+          "name": "size_bytes",
+          "type": "INTEGER"
+        },
+        {
+          "name": "sha256",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(24)"
+        },
+        {
+          "name": "detail",
+          "type": "VARCHAR(512)"
+        },
+        {
+          "name": "result",
+          "type": "JSON"
+        },
+        {
+          "name": "temp_path",
+          "type": "VARCHAR(512)"
+        },
+        {
+          "name": "uploaded_by",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "created_at",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "expires_at",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "imported_connection_id",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "imported_table",
+          "type": "VARCHAR(128)"
+        }
+      ]
+    },
+    {
+      "id": "classifications",
+      "label": "classifications",
+      "tag": "Classifications",
+      "col": 2,
+      "row": 0,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 109,
+          "end_line": 134,
+          "label": "Classification Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "key": "pk"
+        },
+        {
+          "name": "connection_id",
+          "type": "VARCHAR(32)",
+          "key": "fk",
+          "references": "connections.id"
+        },
+        {
+          "name": "schema_name",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "table_name",
+          "type": "VARCHAR(128)"
+        },
+        {
+          "name": "column_name",
+          "type": "VARCHAR(128)"
+        },
+        {
+          "name": "data_type",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "detected_category",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "detected_sensitivity",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "confidence",
+          "type": "FLOAT"
+        },
+        {
+          "name": "detection_method",
+          "type": "VARCHAR(128)"
+        },
+        {
+          "name": "evidence",
+          "type": "VARCHAR(512)"
+        },
+        {
+          "name": "sample_count",
+          "type": "INTEGER"
+        },
+        {
+          "name": "suggested_masking",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "category",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "sensitivity",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "review_status",
+          "type": "VARCHAR(16)"
+        },
+        {
+          "name": "reviewed_by",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "reviewed_at",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "source",
+          "type": "VARCHAR(16)"
+        },
+        {
+          "name": "last_scanned_at",
+          "type": "TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "id": "ai_classifications",
+      "label": "ai_classifications",
+      "tag": "Classifications",
+      "col": 2,
+      "row": 1,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 136,
+          "end_line": 160,
+          "label": "AiClassification Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "key": "pk"
+        },
+        {
+          "name": "classification_id",
+          "type": "INTEGER",
+          "key": [
+            "fk",
+            "uk"
+          ],
+          "references": "classifications.id"
+        },
+        {
+          "name": "feature_hash",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "features",
+          "type": "JSON"
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(20)"
+        },
+        {
+          "name": "detected_by",
+          "type": "VARCHAR(8)"
+        },
+        {
+          "name": "ai_category",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "ai_sensitivity",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "pii_type",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "identifier_kind",
+          "type": "VARCHAR(16)"
+        },
+        {
+          "name": "confidence",
+          "type": "FLOAT"
+        },
+        {
+          "name": "reason",
+          "type": "VARCHAR(400)"
+        },
+        {
+          "name": "needs_review",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "rule_category",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "rule_sensitivity",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "error_code",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "model",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "prompt_version",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "id": "ml_classifications",
+      "label": "ml_classifications",
+      "tag": "Classifications",
+      "col": 2,
+      "row": 2,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 162,
+          "end_line": 180,
+          "label": "MlClassification Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "key": "pk"
+        },
+        {
+          "name": "classification_id",
+          "type": "INTEGER",
+          "key": [
+            "fk",
+            "uk"
+          ],
+          "references": "classifications.id"
+        },
+        {
+          "name": "status",
+          "type": "VARCHAR(20)"
+        },
+        {
+          "name": "detected_by",
+          "type": "VARCHAR(8)"
+        },
+        {
+          "name": "category",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "sensitivity",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "confidence",
+          "type": "FLOAT"
+        },
+        {
+          "name": "top",
+          "type": "JSON"
+        },
+        {
+          "name": "reasons",
+          "type": "JSON"
+        },
+        {
+          "name": "rule_category",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "rule_sensitivity",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "error",
+          "type": "VARCHAR(160)"
+        },
+        {
+          "name": "model_version",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "id": "policies",
+      "label": "policies",
+      "tag": "Policies & Audit",
+      "col": 3,
+      "row": 0,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 182,
+          "end_line": 201,
+          "label": "Policy Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "key": "pk"
+        },
+        {
+          "name": "name",
+          "type": "VARCHAR(128)"
+        },
+        {
+          "name": "role",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "connection_id",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "schema_name",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "table_name",
+          "type": "VARCHAR(128)"
+        },
+        {
+          "name": "column_name",
+          "type": "VARCHAR(128)"
+        },
+        {
+          "name": "category",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "sensitivity",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "action",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "priority",
+          "type": "INTEGER"
+        },
+        {
+          "name": "active",
+          "type": "BOOLEAN"
+        },
+        {
+          "name": "version",
+          "type": "INTEGER"
+        },
+        {
+          "name": "description",
+          "type": "VARCHAR(255)"
+        },
+        {
+          "name": "updated_by",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "updated_at",
+          "type": "TIMESTAMP"
+        }
+      ]
+    },
+    {
+      "id": "policy_versions",
+      "label": "policy_versions",
+      "tag": "Policies & Audit",
+      "col": 3,
+      "row": 1,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 203,
+          "end_line": 212,
+          "label": "PolicyVersion Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "id",
+          "type": "INTEGER",
+          "key": "pk"
+        },
+        {
+          "name": "policy_id",
+          "type": "INTEGER",
+          "key": "fk",
+          "references": "policies.id"
+        },
+        {
+          "name": "version",
+          "type": "INTEGER"
+        },
+        {
+          "name": "snapshot",
+          "type": "JSON"
+        },
+        {
+          "name": "changed_by",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "changed_at",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "change_type",
+          "type": "VARCHAR(16)"
+        }
+      ]
+    },
+    {
+      "id": "audit_events",
+      "label": "audit_events",
+      "tag": "Policies & Audit",
+      "col": 3,
+      "row": 2,
+      "sources": [
+        {
+          "path": "FULL_CODE/backend/app/metadb.py",
+          "line": 214,
+          "end_line": 233,
+          "label": "AuditEvent Model"
+        }
+      ],
+      "attributes": [
+        {
+          "name": "id",
+          "type": "VARCHAR(32)",
+          "key": "pk"
+        },
+        {
+          "name": "seq",
+          "type": "INTEGER",
+          "key": "uk"
+        },
+        {
+          "name": "ts",
+          "type": "TIMESTAMP"
+        },
+        {
+          "name": "actor_id",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "actor_name",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "role",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "action",
+          "type": "VARCHAR(48)"
+        },
+        {
+          "name": "outcome",
+          "type": "VARCHAR(16)"
+        },
+        {
+          "name": "connection_id",
+          "type": "VARCHAR(32)"
+        },
+        {
+          "name": "tables",
+          "type": "JSON"
+        },
+        {
+          "name": "columns",
+          "type": "JSON"
+        },
+        {
+          "name": "reason",
+          "type": "VARCHAR(512)"
+        },
+        {
+          "name": "duration_ms",
+          "type": "FLOAT"
+        },
+        {
+          "name": "correlation_id",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "details",
+          "type": "JSON"
+        },
+        {
+          "name": "prev_hash",
+          "type": "VARCHAR(64)"
+        },
+        {
+          "name": "entry_hash",
+          "type": "VARCHAR(64)"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "id": "rel_roles_users",
+      "from": "roles",
+      "to": "users",
+      "label": "grants role",
+      "fromCardinality": "one",
+      "toCardinality": "many"
+    },
+    {
+      "id": "rel_users_sessions",
+      "from": "users",
+      "to": "sessions",
+      "label": "owns sessions",
+      "fromCardinality": "one",
+      "toCardinality": "many"
+    },
+    {
+      "id": "rel_conn_grants",
+      "from": "connections",
+      "to": "table_grants",
+      "label": "table grants",
+      "fromCardinality": "one",
+      "toCardinality": "many"
+    },
+    {
+      "id": "rel_conn_scans",
+      "from": "connections",
+      "to": "scan_runs",
+      "label": "executes scans",
+      "fromCardinality": "one",
+      "toCardinality": "many"
+    },
+    {
+      "id": "rel_conn_class",
+      "from": "connections",
+      "to": "classifications",
+      "label": "classifies columns",
+      "fromCardinality": "one",
+      "toCardinality": "many"
+    },
+    {
+      "id": "rel_class_ai",
+      "from": "classifications",
+      "to": "ai_classifications",
+      "label": "Gemini verdict",
+      "fromCardinality": "one",
+      "toCardinality": "one"
+    },
+    {
+      "id": "rel_class_ml",
+      "from": "classifications",
+      "to": "ml_classifications",
+      "label": "local ML verdict",
+      "fromCardinality": "one",
+      "toCardinality": "one"
+    },
+    {
+      "id": "rel_pol_versions",
+      "from": "policies",
+      "to": "policy_versions",
+      "label": "version history",
+      "fromCardinality": "one",
+      "toCardinality": "many"
+    }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Access & Session Control",
+      "items": [
+        "roles table defines named RBAC principals and JSON permissions",
+        "users reference roles.name as a foreign key; sessions store SHA-256 token hashes"
+      ]
+    },
+    {
+      "dot": "emerald",
+      "title": "Dual-Model Discovery Schema",
+      "items": [
+        "classifications stores the effective category, sensitivity, and review status",
+        "ai_classifications and ml_classifications maintain 1:1 foreign keys on classifications.id",
+        "Rule, ML, and AI verdicts are kept distinct so human reviewers can trace provenance"
+      ]
+    },
+    {
+      "dot": "rose",
+      "title": "Immutable Audit Ledger",
+      "items": [
+        "audit_events maintains sequential integers (seq) and SHA-256 hash chains (prev_hash, entry_hash)",
+        "Database triggers prohibit UPDATE and DELETE, guaranteeing tamper-evident immutability"
+      ]
+    }
+  ]
+}

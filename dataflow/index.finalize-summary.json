@@ -1,0 +1,138 @@
+{
+  "schemaVersion": 1,
+  "ok": true,
+  "command": "finalize",
+  "status": "pass",
+  "type": "dataflow",
+  "quality": "showcase",
+  "specification": {
+    "path": "C:\\Users\\nithi\\talentAP\\.archify\\dataflow\\candidate.json",
+    "sha256": "9463fa39ddec698596f13bd522167c59eae1ad5947337d4584915f7969041f23",
+    "bytes": 8887
+  },
+  "artifact": {
+    "path": "C:\\Users\\nithi\\talentAP\\.archify\\dataflow\\index.html",
+    "sha256": "9556ccc5b6efda7c572533f1cfe15d058decd034febbd6c0956a05de7a3acc52",
+    "bytes": 851626
+  },
+  "gates": {
+    "validate": "pass",
+    "deliver": "pass",
+    "check": "pass",
+    "browser-check": "pass"
+  },
+  "diagnostics": [],
+  "diagnosticSummary": {
+    "total": 0,
+    "shown": 0,
+    "truncated": false
+  },
+  "evidence": {
+    "receipt": "C:\\Users\\nithi\\talentAP\\.archify\\dataflow\\index.finalize.json",
+    "summaryReceipt": "C:\\Users\\nithi\\talentAP\\.archify\\dataflow\\index.finalize-summary.json",
+    "browserCheckReceipt": "C:\\Users\\nithi\\talentAP\\.archify\\dataflow\\index.browser-check.json"
+  },
+  "update": {
+    "status": "current",
+    "installedVersion": "3.2.0",
+    "availableVersion": "3.2.0",
+    "releaseNotes": null,
+    "checkedAt": "2026-10-31T05:28:57.189Z",
+    "source": "cache",
+    "noticeRequired": false,
+    "noticeText": null
+  },
+  "visualReview": "not-requested",
+  "durationMs": 4015,
+  "browserCheck": {
+    "requested": true,
+    "ran": true
+  },
+  "visualReviewRecommendation": {
+    "action": "inspect-route-readability",
+    "signals": {
+      "resolvedCrossovers": 1,
+      "routesOverSuggestedBends": 2,
+      "routesOverSuggestedStretch": 1
+    },
+    "reason": "Automated gates passed, but crossings or detours still need perceptual review before claiming visual quality.",
+    "affectedRoutes": {
+      "crossings": [
+        {
+          "left": {
+            "id": "f_base_rule",
+            "from": "rule_verdict",
+            "to": "upgrade_gate",
+            "label": "baseline rank",
+            "collectionIndex": 6,
+            "artifactIndex": 7
+          },
+          "right": {
+            "id": "f_ml_in",
+            "from": "sanitized_features",
+            "to": "ml_classifier",
+            "label": "numeric features",
+            "collectionIndex": 7,
+            "artifactIndex": 8
+          },
+          "point": [
+            637.5,
+            227
+          ]
+        }
+      ],
+      "detours": [
+        {
+          "relationship": {
+            "id": "f_extract",
+            "from": "row_samples",
+            "to": "feature_extractor",
+            "label": "featurize",
+            "collectionIndex": 4,
+            "artifactIndex": 5
+          },
+          "bends": 4,
+          "stretch": 1.373,
+          "directCorridorBlockers": [
+            {
+              "id": "rule_verdict",
+              "label": "Rule Verdict",
+              "box": [
+                259,
+                242,
+                112,
+                58
+              ]
+            }
+          ]
+        },
+        {
+          "relationship": {
+            "id": "f_base_rule",
+            "from": "rule_verdict",
+            "to": "upgrade_gate",
+            "label": "baseline rank",
+            "collectionIndex": 6,
+            "artifactIndex": 7
+          },
+          "bends": 4,
+          "stretch": 1.277,
+          "directCorridorBlockers": [
+            {
+              "id": "feature_extractor",
+              "label": "Feature Extractor",
+              "box": [
+                474,
+                242,
+                112,
+                58
+              ]
+            }
+          ]
+        }
+      ],
+      "truncated": false
+    },
+    "repair": "Advisory only: this mode places or routes these relationships itself. Report them; do not remove relationships or meaning to reduce crossings."
+  }
+}

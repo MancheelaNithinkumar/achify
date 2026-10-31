@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "receiptId": "063291d5-f067-4e7c-9b87-f3d9a15b5b50",
+  "status": "current",
+  "command": "deliver",
+  "type": "architecture",
+  "input": "C:\\Users\\nithi\\talentAP\\.archify\\architecture\\candidate.json",
+  "output": "C:\\Users\\nithi\\talentAP\\.archify\\architecture\\index.html",
+  "specification": {
+    "sha256": "eff59f82f5a128c3023de712cf4a0ba3fc5b2e585f631aaa1b087e72c337c091",
+    "bytes": 15775
+  },
+  "artifact": {
+    "sha256": "997c0799957733bb8f3fa6718135d71020915b4f3fb8ee7fd68c7c6516df9531",
+    "bytes": 881998
+  }
+}
